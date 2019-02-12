@@ -11,8 +11,8 @@ module:
 	$(MAKE) -C $@
 
 main: common
-	# $(MAKE) -C $@
-	$(shell echo main)
+	$(MAKE) -C $@
 
 clean:
-	$(shell echo test clean)
+	$(MAKE) -C main clean
+	$(MAKE) -C common clean

@@ -2,7 +2,7 @@
 #****************************************************************************
 # Targets of the build
 #****************************************************************************
-OUTPUT := lobtool.a
+OUTPUT := libtool.a
 
 OUTPUT_INCLUDE := ../includes/tool
 OUTPUT_LIBS    := ../libs
