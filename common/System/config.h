@@ -3,20 +3,24 @@
 
 #include <stdint.h>
 #include <string.h>
-#define INVALID_SOCKET -1
-typedef unsigned char BYTE;
 #include <assert.h>
 #include <errno.h>
 
+#define INVALID_SOCKET -1
+typedef unsigned char BYTE;
+
 #ifdef CHECK_PTHREAD_RETURN_VALUE
 
+// no debug
 #ifdef NDEBUG
 __BEGIN_DECLS
+
 extern void __assert_perror_fail(int errnum,
                                  const char *file,
                                  unsigned int line,
                                  const char *function)
 __THROW __attribute__((__noreturn__));
+
 __END_DECLS
 #endif
 
@@ -32,7 +36,6 @@ if (__builtin_expect(errnum != 0, 0))    \
 #endif // CHECK_PTHREAD_RETURN_VALUE
 
 const float PRECISION = 0.000001f;
-
 #define ISZERO(ret) (ret >= -PRECISION && ret <= PRECISION)
 
 #endif

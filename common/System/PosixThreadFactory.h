@@ -31,6 +31,7 @@ public:
     };
 
     /**
+     * 所有创建的线程都和 std::shared_ptr 关联
      * Posix thread (pthread) factory.  All threads created by a factory are reference-counted
      * via stdcxx::shared_ptr.  The factory guarantees that threads and the Runnable tasks
      * they host will be properly cleaned up once the last strong reference to both is

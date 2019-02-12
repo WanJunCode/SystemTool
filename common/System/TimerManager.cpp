@@ -12,10 +12,10 @@ TimerManager::TimerManager()
     }
 }
 
-
 TimerManager::~TimerManager() {
     bexit_ = true;
     std::lock_guard<std::mutex> locker(mutex_);
+    // 删除向量中的 Timer
     while (vtimer_.size()) {
         Timer * ref = vtimer_.back();
         if (!ref->owned_) {
@@ -94,6 +94,7 @@ void TimerManager::run() {
         if (vtimer_.size()) {
             event_dispatch();
         }
+        // unique_lock 可以在 condition 中解锁上锁
         std::unique_lock<std::mutex> locker(mutex_);
         expired_cond_.wait(locker);
     } while (!bexit_);

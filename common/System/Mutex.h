@@ -9,6 +9,13 @@
 
 #include "utime.h"
 
+/**
+ * 对 pthread_mutex_t 的封装
+ * lock()
+ * trylock()
+ * timedlock()
+ * unlock()
+ **/
 class Mutex {
 public:
     Mutex() {
@@ -26,6 +33,7 @@ public:
     }
     bool timedlock(int64_t milliseconds) {
         struct timespec ts;
+        // 返回值　ts
         Util::toTimespec(ts, milliseconds + Util::currentTime());
         int ret = pthread_mutex_timedlock(&pthread_mutex_, &ts);
         if (ret == 0) {
@@ -47,6 +55,7 @@ private:
     pthread_mutex_t pthread_mutex_;
 };
 
+// mutex 
 class Guard {
 public:
     Guard(Mutex& value, int64_t timeout = 0)
@@ -62,6 +71,7 @@ public:
                 mutex_ = NULL;
             }
         }
+        // lock()  trylock()  timedlock()
     }
 
     ~Guard() {
@@ -77,6 +87,7 @@ private:
     Mutex *mutex_;
 };
 
+//  pthread_rwlock_t 封装;
 class ReadWriteMutex {
 public:
     ReadWriteMutex() {
@@ -99,7 +110,7 @@ public:
     bool attemptRead() {
         CHECK_RETURN_VALUE(pthread_rwlock_tryrdlock(&lock_));
     }
-    
+
     bool attemptWrite() {
         CHECK_RETURN_VALUE(pthread_rwlock_trywrlock(&lock_));
     }

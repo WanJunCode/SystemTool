@@ -1,5 +1,5 @@
-#include "Monitor.h"
 #include <assert.h>
+#include "Monitor.h"
 #include "config.h"
 #include "../Log/Wlog.h"
 
@@ -131,6 +131,7 @@ private:
     mutable pthread_cond_t pthread_cond_;
     mutable bool condInitialized_;
 };
+// end Monitor::Impl
 
 Monitor::Monitor()
     : impl_(new Monitor::Impl()) {

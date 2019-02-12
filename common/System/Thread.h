@@ -10,6 +10,7 @@ public:
     virtual ~Runnable() {};
 
 public:
+    // 纯虚函数，一定要实现
     virtual void run() = 0;
     /**
     * Gets the thread object that is hosting this runnable object
@@ -67,7 +68,7 @@ protected:
     }
 
 private:
-    Runnable* 	runnable_;
+    Runnable* runnable_;
 };
 
 class ThreadFactory {

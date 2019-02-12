@@ -6,6 +6,7 @@
 
 #include "../Log/Wlog.h"
 
+// Posix Thread
 class PthreadThread : public Thread {
 public:
     enum STATE { uninitialized, starting, started, stopping, stopped };
@@ -32,6 +33,7 @@ public:
         , priority_(priority)
         , stackSize_(stackSize)
         , detached_(detached) {
+        // 基类函数，设置runnable
         this->Thread::runnable(runnable);
     }
 
@@ -51,7 +53,7 @@ public:
     }
 
     void setState(STATE newState) {
-        Synchronized sync(monitor_);
+        Synchronized sync(monitor_);// 上锁
         state_ = newState;
 
         // unblock start() with the knowledge that the thread has actually
@@ -65,7 +67,8 @@ public:
         if (getState() != uninitialized) {
             return;
         }
-
+        
+        // 线程属性
         pthread_attr_t thread_attr;
         if (pthread_attr_init(&thread_attr) != 0) {
             LOG_DEBUG("pthread_attr_init failed");
@@ -78,12 +81,13 @@ public:
             return;
         }
 
-        // Set thread stack size
+        // Set thread stack size　， thread 栈最小的空间大小
         if (pthread_attr_setstacksize(&thread_attr, MB * stackSize_) != 0) {
             LOG_DEBUG("pthread_attr_setstacksize failed");
             return;
         }
 
+        // 设置线程的　优先级调控策略
 #if _POSIX_THREAD_PRIORITY_SCHEDULING > 0
         if (pthread_attr_setschedpolicy(&thread_attr, policy_) != 0) {
             LOG_DEBUG("pthread_attr_setschedpolicy failed");
@@ -91,20 +95,21 @@ public:
         }
 #endif
 
-        //struct sched_param sched_param;
-        //sched_param.sched_priority = priority_;
+        // struct sched_param sched_param;
+        // sched_param.sched_priority = priority_;
 
-        //// Set thread priority
-        //if (pthread_attr_setschedparam(&thread_attr, &sched_param) != 0) {
-        //    LOG_CXX(LOG_ERROR) << "pthread_attr_setschedparam failed";
+        // // Set thread priority
+        // if (pthread_attr_setschedparam(&thread_attr, &sched_param) != 0) {
+        //    LOG_DEBUG("pthread_attr_setschedparam failed");
         //    return;
-        //}
+        // }
 
         // Create reference
         setState(starting);
 
         Synchronized sync(monitor_);
 
+        // threadMain 函数作为线程函数
         if (pthread_create(&pthread_, &thread_attr, threadMain, this) != 0) {
             LOG_DEBUG("pthread_create failed");
             return;
@@ -217,12 +222,14 @@ PosixThreadFactory::PosixThreadFactory(bool detached)
     , stackSize_(1) {
 }
 
+// 线程工厂，创建新线程
 Thread *PosixThreadFactory::newThread(Runnable *runnable) const {
     PthreadThread * result = new PthreadThread(toPthreadPolicy(policy_),
             toPthreadPriority(policy_, priority_),
             stackSize_,
             isDetached(),
             runnable);
+    // 记录 weakRef
     result->weakRef(result);
     runnable->thread(result);
     return result;

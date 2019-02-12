@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <stack>
-#include<atomic>
+#include <atomic>
 #include <mutex>
 #include <condition_variable>
 #include "Timer.h"
@@ -36,8 +36,8 @@ private:
     std::mutex mutex_;
     std::atomic<bool> bexit_;
     std::condition_variable expired_cond_;
-    std::vector<Timer *> vtimer_;
-    std::stack<Timer *> timerStack_;
+    std::vector<Timer *> vtimer_;// 向量
+    std::stack<Timer *> timerStack_;// 栈
     size_t timerStackLimit_;
 };
 

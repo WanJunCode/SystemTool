@@ -8,16 +8,16 @@ Queue_s.h
 * 线程安全队列封装
 *
 * 说明 :
-*1、Queue_s：
+* 1、Queue_s：
 *         基于模板stl中queue实现线程安全
 * 2、Priority_Queue_s：
 *         基于模板stl中priority_queue实现线程安全
 * 3、用法跟普通模板用法一致
 *
 * Change Logs :
-*Date         Author      Notes
-* 2016 - 08 - 04   chenfei     创建
-* */
+* Date         Author      Notes
+* 2016-08-04   chenfei     创建
+**/
 
 #ifndef __CF_QUEUE_S_H
 #define __CF_QUEUE_S_H

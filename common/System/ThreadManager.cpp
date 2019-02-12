@@ -494,6 +494,7 @@ void ThreadManager::Impl::setExpireCallback(ExpireCallback expireCallback) {
     expireCallback_ = expireCallback;
 }
 
+// 简单的线程管理器
 class SimpleThreadManager : public ThreadManager::Impl {
 public:
     SimpleThreadManager(size_t workerCount = 4, size_t pendingTaskCountMax = 0)

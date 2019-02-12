@@ -8,6 +8,7 @@ class Runnable;
 class ThreadFactory;
 class ThreadManager {
 public:
+    // 超时回调函数
     typedef void(*ExpireCallback)(std::shared_ptr<Runnable>);
 public:
     virtual ~ThreadManager() {};

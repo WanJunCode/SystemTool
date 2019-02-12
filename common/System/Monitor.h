@@ -11,7 +11,7 @@
  * lock and unlock operations can be performed independently of condition
  * events.  This is more or less analogous to java.lang.Object multi-thread
  * operations.
- */
+ **/
 class Monitor {
 public:
     /** Creates a new mutex, and takes ownership of it. */
@@ -69,6 +69,7 @@ public:
     virtual void notifyAll() const;
 
 private:
+    // 实现类
     class Impl;
 
     Impl* impl_;
