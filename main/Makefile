@@ -61,7 +61,7 @@ CXXFLAGS := ${CXXFLAGS} ${INCS}
 # Targets of the build
 #****************************************************************************
 
-OUTPUT := ./wj-service
+OUTPUT := ../wj-service
 
 all: ${OUTPUT}
 

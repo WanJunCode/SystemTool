@@ -16,4 +16,4 @@ main: common
 clean:
 	$(MAKE) -C main clean
 	$(MAKE) -C common clean
-	rm -rf *.log
+	rm -rf *.log *.out

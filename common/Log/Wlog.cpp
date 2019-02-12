@@ -1,5 +1,4 @@
 #include "Wlog.h"
-#include "../Tool/Wtool.h"
 
 #include <unistd.h>
 #include <sys/syscall.h>
@@ -70,7 +69,7 @@ void Log::printf(unsigned long pthread_id,const std::string filename,int line,co
     
     // Log::getInstance()<<timeStr<<vform(cmd,args);
     Log::getInstance()<<timeStr<<vform(cmd,args);
-    std::cout<<timeStr<<vform(cmd,args);
+    std::cout<<timeStr<<vform(cmd,args)<<std::endl;
     root.info(vform(cmd,args));
     va_end(args);       //结束可变参数的获取
 }
