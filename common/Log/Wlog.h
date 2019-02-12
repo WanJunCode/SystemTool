@@ -1,6 +1,7 @@
 #ifndef WANJUN_LOG_H
 #define WANJUN_LOG_H
 
+#include "../Tool/Wtool.h"
 
 #include <fstream>
 #include <iostream>
