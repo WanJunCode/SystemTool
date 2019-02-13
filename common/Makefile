@@ -63,10 +63,13 @@ all:
 	mkdir -p ${OUTPUT_LIBS}
 	$(MAKE) -C Tool
 	$(MAKE) -C Log
-	$(MAKE) -C System
+	$(MAKE) -C WSystem
+	# $(MAKE) -C WSystem
+
 
 clean:
 	rm -rf $(OUTPUT_INCLUDE) $(OUTPUT_LIBS)
 	$(MAKE) -C Tool clean
 	$(MAKE) -C Log clean
-	$(MAKE) -C System clean
+	$(MAKE) -C WSystem clean
+	# $(MAKE) -C WSystem clean

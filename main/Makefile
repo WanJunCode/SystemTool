@@ -21,7 +21,7 @@ RELEASE_CFLAGS   += -std=c++11 -ggdb -Wall -ffunction-sections -O3 -Wno-format \
 -Wno-unknown-pragmas -Wno-format -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP
 
 LIBS := -L/usr/lib64/mysql/ -L../common/libs/ \
-	-llog -ltool\
+	-llog -ltool -lsystem\
 	-luuid -lmysqlpp -lmysqlclient -lpthread -levent -lmosquittopp -ljsoncpp -llog4cpp
 
 DEBUG_CXXFLAGS   += ${DEBUG_CFLAGS} 
@@ -81,7 +81,7 @@ OBJS+=$(subst .cpp,.o,$(CXX_SRCS))
 #****************************************************************************
 
 ${OUTPUT}:$(OBJS)
-	$(CXX) -o $@ -Wl,-gc-sections -Wl,--start-group $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CXX) -o $@ -Wl,-gc-sections -Wl,--start-group $(OBJS) $(LDFLAGS) $(LIBS) -g
 
 #****************************************************************************
 # common rules
