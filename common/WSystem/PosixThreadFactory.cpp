@@ -11,21 +11,13 @@ public:
 
     static void threadMain(void *arg);
 
-private:
-    WThread::thread_id threadId_;
-    std::thread *thread_;
-    STATE state_;
-    PthreadThread *self_;
-    bool detached_;
-    std::mutex mutex_;
-    std::condition_variable condition_;
-
 public:
     PthreadThread(bool detached,Runnable *runnable)
-        : state_(STATE::uninitialized)
-        , threadId_(0)
-        , detached_(detached)
-        , self_(this){
+        : threadId_(0)
+        , thread_(nullptr)
+        , state_(STATE::uninitialized)
+        , self_(this)
+        , detached_(detached){
         // 调用 基类 protected 函数
         this->WThread::runnable(runnable);
     }
@@ -49,12 +41,12 @@ public:
         threadId_ = id;
     }
 
-    STATE getState() {
+    PthreadThread::STATE getState() {
         std::lock_guard<std::mutex> locker(mutex_);
         return state_;
     }
 
-    void setState(STATE newState){
+    void setState(PthreadThread::STATE newState){
         std::lock_guard<std::mutex> locker(mutex_);
         state_ = newState;
 
@@ -101,6 +93,15 @@ public:
         assert(self == this);
         self_ = self;
     }
+
+private:
+    WThread::thread_id threadId_;
+    std::thread *thread_;
+    PthreadThread::STATE state_;
+    PthreadThread *self_;
+    bool detached_;
+    std::mutex mutex_;
+    std::condition_variable condition_;
 };
 
 void PthreadThread::threadMain(void *self){
@@ -112,7 +113,7 @@ void PthreadThread::threadMain(void *self){
 
     thread->runnable()->run();
 
-    STATE _s = thread->getState();
+    PthreadThread::STATE _s = thread->getState();
     if(_s != STATE::stopping && _s != STATE::stopped){
         thread->setState(STATE::stopping);
     }
