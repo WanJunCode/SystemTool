@@ -30,7 +30,7 @@ public:
     }
 
     std::mutex& mutex(){
-        // 解引用
+        // 解引用  *pointer
         return *mutex_;
     }
 

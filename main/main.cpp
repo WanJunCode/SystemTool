@@ -3,7 +3,8 @@
 #include "../common/WSystem/Monitor.h"
 int main(int argc,char* argv[]){
     LOG_DEBUG("TEST FOR COMMON LOG");
-    Monitor monitor;
+    Monitor *monitor = new Monitor();
     Synchronized sync(monitor);
+    delete monitor;
     return 0;
 }

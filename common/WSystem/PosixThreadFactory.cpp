@@ -6,32 +6,26 @@
 // 线程池创建的线程
 class PthreadThread : public WThread{
 public:
+    // 当前 thread 的状态
     enum class STATE { uninitialized, starting, started, stopping, stopped };
 
-    static const int MB = 1024 * 1024;
-
-    static void *threadMain(void *arg);
+    static void threadMain(void *arg);
 
 private:
-    WThread::thread_id id_;
+    WThread::thread_id threadId_;
+    std::thread *thread_;
     STATE state_;
-    int policy_;
-    int priority_;
-    int stackSize_;
     PthreadThread *self_;
     bool detached_;
-    // Monitor monitor_;
     std::mutex mutex_;
     std::condition_variable condition_;
 
 public:
-    PthreadThread(int policy,int priority,int stackSize,bool detached,Runnable *runnable)
-        : id_(0)
-        , state_(STATE::uninitialized)
-        , policy_(policy)
-        , priority_(priority)
-        , stackSize_(stackSize)
-        , detached_(detached){
+    PthreadThread(bool detached,Runnable *runnable)
+        : state_(STATE::uninitialized)
+        , threadId_(0)
+        , detached_(detached)
+        , self_(this){
         // 调用 基类 protected 函数
         this->WThread::runnable(runnable);
     }
@@ -45,6 +39,14 @@ public:
                 LOG_DEBUG("WARNING PThreadThread join error");
             }
         }
+    }
+
+    virtual WThread::thread_id getId() {
+        return threadId_;
+    }
+    
+    void setThreadID(WThread::thread_id id){
+        threadId_ = id;
     }
 
     STATE getState() {
@@ -61,5 +63,71 @@ public:
         }
     }
 
+    virtual void start(){
+        if(getState() != STATE::uninitialized){
+            return;
+        }
 
+        setState(STATE::starting);
+
+        std::unique_lock<std::mutex> locker(mutex_);
+
+        thread_ = new std::thread(threadMain, this);
+        if(detached_){
+            // 如果设置了线程 detached
+            thread_->detach();
+        }
+
+        condition_.wait(locker);
+    }
+
+    virtual void join(){
+        if(!detached_ && getState() != STATE::uninitialized){
+            if(thread_->joinable())
+                thread_->join();
+        }
+    }
+
+    virtual Runnable *runnable() const{
+        return WThread::runnable();
+    }
+
+    virtual void runnable(Runnable *value){
+        WThread::runnable(value);
+    }
+
+    // 判断传入的参数 self 是否为 this
+    void weakRef(PthreadThread *self){
+        assert(self == this);
+        self_ = self;
+    }
 };
+
+void PthreadThread::threadMain(void *self){
+    PthreadThread *thread = reinterpret_cast<PthreadThread *>(self);
+    // 设置 thread id
+    thread->setThreadID( WThread::get_current());
+
+    thread->setState(STATE::started);
+
+    thread->runnable()->run();
+
+    STATE _s = thread->getState();
+    if(_s != STATE::stopping && _s != STATE::stopped){
+        thread->setState(STATE::stopping);
+    }
+}
+
+
+// =============================线程工厂=====================================
+PosixThreadFactory::PosixThreadFactory(bool detached)
+    :ThreadFactory(detached){
+}
+
+WThread *PosixThreadFactory::newThread(Runnable *runnable) const{
+    return new PthreadThread(ThreadFactory::isDetached(),runnable);
+}
+
+WThread::thread_id PosixThreadFactory::getCurrentThreadId() const{
+    return WThread::get_current();
+}

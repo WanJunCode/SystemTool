@@ -2,6 +2,7 @@
     "files.associations": {
         "mutex": "cpp",
         "chrono": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "thread": "cpp"
     }
 }
