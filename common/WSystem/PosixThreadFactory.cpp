@@ -33,8 +33,34 @@ public:
         }
     }
 
-    virtual WThread::thread_id getId() {
+    virtual WThread::thread_id getId() override{
         return threadId_;
+    }
+
+    virtual void start() override{
+        if(getState() != STATE::uninitialized){
+            return;
+        }
+
+        setState(STATE::starting);
+
+        std::unique_lock<std::mutex> locker(mutex_);
+
+        thread_ = new std::thread(threadMain, this);
+        if(detached_){
+            // 如果设置了线程 detached
+            thread_->detach();
+        }
+
+        // 等待线程的执行
+        condition_.wait(locker);
+    }
+
+    virtual void join() override{
+        if(!detached_ && getState() != STATE::uninitialized){
+            if(thread_->joinable())
+                thread_->join();
+        }
     }
     
     void setThreadID(WThread::thread_id id){
@@ -52,31 +78,6 @@ public:
 
         if(newState == STATE::started){
             condition_.notify_one();
-        }
-    }
-
-    virtual void start(){
-        if(getState() != STATE::uninitialized){
-            return;
-        }
-
-        setState(STATE::starting);
-
-        std::unique_lock<std::mutex> locker(mutex_);
-
-        thread_ = new std::thread(threadMain, this);
-        if(detached_){
-            // 如果设置了线程 detached
-            thread_->detach();
-        }
-
-        condition_.wait(locker);
-    }
-
-    virtual void join(){
-        if(!detached_ && getState() != STATE::uninitialized){
-            if(thread_->joinable())
-                thread_->join();
         }
     }
 
@@ -109,6 +110,7 @@ void PthreadThread::threadMain(void *self){
     // 设置 thread id
     thread->setThreadID( WThread::get_current());
 
+    // 设置当前 状态为 started, notify_one()
     thread->setState(STATE::started);
 
     thread->runnable()->run();
@@ -119,12 +121,12 @@ void PthreadThread::threadMain(void *self){
     }
 }
 
-
 // =============================线程工厂=====================================
 PosixThreadFactory::PosixThreadFactory(bool detached)
     :ThreadFactory(detached){
 }
 
+// 返回的 WThread 调用 start() 函数开始运行
 WThread *PosixThreadFactory::newThread(Runnable *runnable) const{
     return new PthreadThread(ThreadFactory::isDetached(),runnable);
 }
