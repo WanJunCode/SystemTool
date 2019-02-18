@@ -13,19 +13,22 @@ public:
     }
 
     Impl(Mutex* mutex)
-        : mutex_(NULL)
+        : ownedMutex_(NULL)
+        , mutex_(NULL)
         , condInitialized_(false) {
         init(mutex);
     }
 
     Impl(Monitor* monitor)
-        : mutex_(NULL)
+        : ownedMutex_(NULL)
+        , mutex_(NULL)
         , condInitialized_(false) {
         init(&(monitor->mutex()));
     }
 
     ~Impl() {
         cleanup();
+        delete ownedMutex_;
     }
 
     Mutex& mutex() {

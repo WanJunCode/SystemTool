@@ -7,6 +7,8 @@
 #include "../common/System/ThreadManager.h"
 #include "../common/System/PosixThreadFactory.h"
 #include "../common/System/Thread.h"
+#include "../common/System/Monitor.h"
+
 
 class test_task : public Runnable{
 public:
@@ -19,7 +21,7 @@ public:
         LOG_DEBUG("析构函数");
     }
     virtual void run() override{
-        for(int i=0;i<10;++i){
+        for(int i=0;i<3;++i){
             sleep(seconds_);
             LOG_DEBUG("test [%s]",message_.data());
         }
@@ -31,7 +33,7 @@ private:
 
 int main(int argc,char* argv[]){
     LOG_DEBUG("TEST FOR COMMON LOG");
-    auto manager = ThreadManager::blockingTaskThreadManager(100);
+    auto manager = ThreadManager::blockingTaskThreadManager(2);
     manager->threadFactory(std::make_shared<PosixThreadFactory>(false));
     manager->start();
 
@@ -40,5 +42,6 @@ int main(int argc,char* argv[]){
 
     LOG_DEBUG("after add test task");
     delete manager;
+
     return 0;
 }

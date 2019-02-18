@@ -381,6 +381,9 @@ void ThreadManager::Impl::removeWorkersUnderLock(size_t value) {
 
         idMap_.erase((*ix)->getId());
         workers_.erase(*ix);
+        auto tmp = (*ix)->runnable();
+        delete tmp;
+        delete *ix;
     }
 
     deadWorkers_.clear();

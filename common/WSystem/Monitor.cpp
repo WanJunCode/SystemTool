@@ -14,12 +14,14 @@ public:
 
     Impl(std::mutex *value)
         : mutex_(nullptr)
+        , ownedMutex_(nullptr)
         , condInitialized_(false){
         mutex_ = value;
     }
 
     Impl(Monitor *monitor)
         : mutex_(nullptr)
+        , ownedMutex_(nullptr)
         , condInitialized_(false){
         mutex_ = &( monitor->mutex() );
     }

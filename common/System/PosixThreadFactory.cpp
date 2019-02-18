@@ -38,6 +38,7 @@ public:
     }
 
     ~PthreadThread() {
+        LOG_DEBUG("析构函数 phreadthread");
         if (!detached_) {
             try {
                 join();
