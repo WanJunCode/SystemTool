@@ -35,6 +35,7 @@ public:
     ReadWriteMutex() {
         CHECK_RETURN_VALUE(pthread_rwlock_init(&lock_, NULL));
     };
+
     virtual ~ReadWriteMutex() {
         CHECK_RETURN_VALUE(pthread_rwlock_destroy(&lock_));
     }
@@ -44,6 +45,7 @@ public:
     void acquireRead() {
         CHECK_RETURN_VALUE(pthread_rwlock_rdlock(&lock_));
     }
+
     void acquireWrite() {
         CHECK_RETURN_VALUE(pthread_rwlock_wrlock(&lock_));
     }

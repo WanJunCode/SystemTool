@@ -44,7 +44,9 @@ public:
 
     virtual size_t expiredTaskCount() = 0;
 
-    virtual void add(std::shared_ptr<Runnable> task, int64_t timeout = 0LL, int64_t expiration = 0LL) = 0;
+    virtual void add(std::shared_ptr<Runnable> task, int64_t expiration = 0LL) = 0;
+
+    virtual void try_add(std::shared_ptr<Runnable> task, int64_t expiration = 0LL) = 0;
 
     virtual void remove(std::shared_ptr<Runnable> task) = 0;
 
@@ -58,9 +60,9 @@ protected:
     ThreadManager() {};
 
 public:
-    class Task;
-    class Worker;
-    class Impl;
+    class Task;     // 任务类
+    class Worker;   // 工作线程类
+    class Impl;     // 线程池实现类
 };
 
 #endif

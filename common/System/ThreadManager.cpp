@@ -302,6 +302,7 @@ void ThreadManager::Impl::addWorker(size_t value) {
 }
 
 void ThreadManager::Impl::start() {
+    LOG_DEBUG("ThreadManager Impl start");
     Guard g(mutex_);
     if (state_ == ThreadManager::STOPPED) {
         return;
@@ -323,6 +324,7 @@ void ThreadManager::Impl::start() {
 }
 
 void ThreadManager::Impl::stop() {
+    LOG_DEBUG("ThreadManager Impl stop");
     Guard g(mutex_);
     bool doStop = false;
 
