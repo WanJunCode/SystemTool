@@ -6,6 +6,7 @@
 
 class Runnable;
 class ThreadFactory;
+
 class ThreadManager {
 public:
     // 超时回调函数
@@ -123,8 +124,8 @@ protected:
 
 public:
     class Task; 	// work task
-    class Worker; 	//thread body
-    class Impl;		//thread impl
+    class Worker; 	// thread body
+    class Impl;		// thread impl
 };
 
 #endif

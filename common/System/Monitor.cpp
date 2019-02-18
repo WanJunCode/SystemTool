@@ -3,6 +3,7 @@
 #include "config.h"
 #include "../Log/Wlog.h"
 
+// 注意删除 ownedMutex_
 class Monitor::Impl {
 public:
     Impl()
@@ -131,6 +132,7 @@ private:
     Mutex* ownedMutex_;
     Mutex* mutex_;
 
+    // mutable 可以在 const 函数中修改
     mutable pthread_cond_t pthread_cond_;
     mutable bool condInitialized_;
 };

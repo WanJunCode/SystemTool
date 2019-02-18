@@ -18,7 +18,7 @@ public:
 private:
     pthread_t pthread_;
     Monitor monitor_;   // guard to protect state_ and also notification
-    STATE state_;         // to protect proper thread start behavior
+    STATE state_;       // to protect proper thread start behavior
     int policy_;
     int priority_;
     int stackSize_;
